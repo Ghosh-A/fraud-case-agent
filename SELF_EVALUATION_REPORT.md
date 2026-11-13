@@ -138,7 +138,7 @@ Test classes (14): `RulesFraudCaseAgentTest`, `RecommendationValidatorTest`, `Ma
 | Severity | Finding | File or Component | Remediation |
 |---|---|---|---|
 | Medium | Hardcoded demo user passwords | `SecurityConfig.java` | Externalise or `@Profile("demo")`-gate the in-memory users |
-| Medium | DB default password in committed config (`change-me-locally` fallback) | `application.yml` | Require `FRAUD_DB_PASSWORD` without default for non-local |
+| Medium | DB default password in committed config (`FRAUD_DB_PASSWORD` had a literal fallback) | `application.yml` | Require `FRAUD_DB_PASSWORD` without default — **fixed** |
 | Low | `/actuator/metrics` 500s through generic handler when not exposed | `ApiExceptionHandler` | Either expose metrics or map to 404 |
 | Info | Injection-bearing policy docs retrievable as *passage data only* — verified no behavioural effect | `PolicyRetriever` | None — test documents intent |
 | Info | Audit payload hashing + summary truncation verified — no raw PII/statements in audit/log | `AuditEventWriterTest` | None |

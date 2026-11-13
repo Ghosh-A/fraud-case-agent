@@ -57,8 +57,12 @@ CREATE USER 'fraudapp'@'localhost' IDENTIFIED BY 'change-me-locally';
 GRANT ALL PRIVILEGES ON fraudcase.* TO 'fraudapp'@'localhost';
 ```
 
-Override connection settings via env vars if needed: `FRAUD_DB_URL`,
-`FRAUD_DB_USER`, `FRAUD_DB_PASSWORD` (defaults shown above — local dev only).
+Set the connection env vars before running — `FRAUD_DB_PASSWORD` is required
+(no committed default); `FRAUD_DB_URL` and `FRAUD_DB_USER` have local defaults:
+
+```bash
+export FRAUD_DB_PASSWORD='<your-local-db-password>'
+```
 
 ```bash
 mvn spring-boot:run            # defaults to rules mode on port 8080
