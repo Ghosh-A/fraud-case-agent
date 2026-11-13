@@ -103,7 +103,7 @@ public class UiController {
         } catch (IllegalStateException e) {
             model.addAttribute("rec", null);
         }
-        model.addAttribute("dispositions", Disposition.values());
+        model.addAttribute("dispositions", service.allowedDispositions(caseId));
         model.addAttribute("routes", Route.values());
         model.addAttribute("reviews", service.reviewsFor(caseId));
         model.addAttribute("audit", service.auditFor(caseId));

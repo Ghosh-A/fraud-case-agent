@@ -10,6 +10,7 @@ import com.capstone.fraudcase.domain.CardPossession;
 import com.capstone.fraudcase.domain.CaseState;
 import com.capstone.fraudcase.domain.Classification;
 import com.capstone.fraudcase.domain.Disposition;
+import com.capstone.fraudcase.domain.IllegalCaseTransitionException;
 import com.capstone.fraudcase.domain.IntakeChannel;
 import com.capstone.fraudcase.domain.IssueType;
 import com.capstone.fraudcase.domain.Route;
@@ -126,6 +127,50 @@ class FraudCaseFlowTest {
         assertThat(service.getCase(c.getCaseId()).getStatus()).isEqualTo(CaseState.INCOMPLETE);
         RecommendationEntity rec = service.latestRecommendation(c.getCaseId());
         assertThat(rec.getClassification()).isEqualTo(Classification.INSUFFICIENT_EVIDENCE);
+    }
+
+    @Test
+    void t04b_incompleteCaseOffersLimitedReviewActions() {
+        FraudCaseEntity c = service.createCase(
+                intake("TXN-SCN-MISSING-004", IssueType.OTHER, false,
+                        "Something happened to my account."), "agent1");
+        service.investigate(c.getCaseId(), "agent1");
+        assertThat(service.allowedDispositions(c.getCaseId()))
+                .containsExactly(Disposition.REQUEST_INFORMATION, Disposition.CLOSE);
+    }
+
+    @Test
+    void t04c_reviewerCanRequestInfoOnIncompleteCase() {
+        FraudCaseEntity c = service.createCase(
+                intake("TXN-SCN-MISSING-004", IssueType.OTHER, false,
+                        "Something happened to my account."), "agent1");
+        service.investigate(c.getCaseId(), "agent1");
+        service.submitReview(c.getCaseId(), Disposition.REQUEST_INFORMATION,
+                "need the card statement line", null, "rev1");
+        assertThat(service.getCase(c.getCaseId()).getStatus()).isEqualTo(CaseState.INCOMPLETE);
+        assertThat(service.reviewsFor(c.getCaseId())).hasSize(1);
+    }
+
+    @Test
+    void t04d_reviewerCanCloseIncompleteCase() {
+        FraudCaseEntity c = service.createCase(
+                intake("TXN-SCN-MISSING-004", IssueType.OTHER, false,
+                        "Something happened to my account."), "agent1");
+        service.investigate(c.getCaseId(), "agent1");
+        service.submitReview(c.getCaseId(), Disposition.CLOSE,
+                "no matching transaction; customer unreachable", null, "rev1");
+        assertThat(service.getCase(c.getCaseId()).getStatus()).isEqualTo(CaseState.CLOSED);
+    }
+
+    @Test
+    void t04e_incompleteCaseCannotBeRouted() {
+        FraudCaseEntity c = service.createCase(
+                intake("TXN-SCN-MISSING-004", IssueType.OTHER, false,
+                        "Something happened to my account."), "agent1");
+        service.investigate(c.getCaseId(), "agent1");
+        assertThatThrownBy(() -> service.submitReview(c.getCaseId(), Disposition.ACCEPT_ROUTE,
+                "route anyway", null, "rev1"))
+                .isInstanceOf(IllegalCaseTransitionException.class);
     }
 
     @Test

@@ -1,6 +1,6 @@
 # Capstone Self-Evaluation Report
 
-**Participant:** Ubuntu
+**Participant:** Angel Ghosh
 **Project:** Intelligent Payment Fraud Investigation and Dispute Resolution Agent (`fraud-case-agent`)
 **Date:** 2026-11-13
 **Evaluator role:** Self-evaluation as senior Java AI architect, BFS fraud-domain reviewer, secure-code reviewer, and test architect — per `Devin_Self_Evaluation_Prompt_Fraud_Capstone.md`

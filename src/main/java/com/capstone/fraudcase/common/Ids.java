@@ -1,5 +1,6 @@
 package com.capstone.fraudcase.common;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 /** Human-readable, ordered-enough identifiers for traceable artifacts. */
@@ -10,12 +11,19 @@ public final class Ids {
     private Ids() {
     }
 
+    // The counter alone can collide across JVM restarts (the seed is clock-derived),
+    // which previously let a "new" case silently overwrite an existing row via JPA merge.
+    private static String suffix() {
+        return Integer.toHexString(ThreadLocalRandom.current().nextInt(0x10000));
+    }
+
     private static String next(String prefix) {
-        return prefix + "-" + SEQ.incrementAndGet();
+        return prefix + "-" + SEQ.incrementAndGet() + "-" + suffix();
     }
 
     public static String caseId() {
-        return "CASE-" + java.time.Year.now().getValue() + "-" + String.format("%05d", SEQ.incrementAndGet());
+        return "CASE-" + java.time.Year.now().getValue() + "-"
+                + String.format("%05d", SEQ.incrementAndGet()) + "-" + suffix();
     }
 
     public static String claimId() {

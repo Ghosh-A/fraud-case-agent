@@ -98,7 +98,13 @@ public class FraudCaseService {
         }
         Instant now = Instant.now();
         FraudCaseEntity c = new FraudCaseEntity();
-        c.setCaseId(Ids.caseId());
+        // Guard against ever merging onto an existing row — ids are unique by
+        // construction, but a collision must never silently overwrite a case.
+        String caseId;
+        do {
+            caseId = Ids.caseId();
+        } while (cases.existsById(caseId));
+        c.setCaseId(caseId);
         c.setMaskedCustomerRef(req.getMaskedCustomerRef());
         c.setHomeRegion(req.getHomeRegion());
         c.setStatus(CaseState.NEW);
@@ -189,15 +195,11 @@ public class FraudCaseService {
         FraudCaseEntity c = getCase(caseId);
         if (c.getStatus() == CaseState.READY_FOR_REVIEW) {
             transition(c, CaseState.UNDER_REVIEW, reviewerId);
-        } else if (c.getStatus() != CaseState.UNDER_REVIEW) {
+        } else if (c.getStatus() != CaseState.UNDER_REVIEW && c.getStatus() != CaseState.INCOMPLETE) {
             throw new IllegalStateException(
                     "case " + caseId + " is not awaiting review (state=" + c.getStatus() + ")");
         }
-        CaseState target = switch (disposition) {
-            case ACCEPT_ROUTE, ESCALATE, REROUTE, OVERRIDE -> CaseState.ROUTED;
-            case REQUEST_INFORMATION -> CaseState.INCOMPLETE;
-            case CLOSE -> CaseState.CLOSED;
-        };
+        CaseState target = targetFor(disposition);
         ReviewDispositionEntity r = new ReviewDispositionEntity();
         r.setReviewId(Ids.reviewId());
         r.setCaseId(caseId);
@@ -207,7 +209,9 @@ public class FraudCaseService {
         r.setChosenRoute(chosenRoute == null ? null : chosenRoute.name());
         r.setRecordedAt(Instant.now());
         reviews.save(r);
-        transition(c, target, reviewerId);
+        if (target != c.getStatus()) {
+            transition(c, target, reviewerId);
+        }
         cases.save(c);
         audit.record(caseId, AuditEventType.REVIEW_RECORDED, ActorType.REVIEWER, reviewerId,
                 disposition + "|" + (chosenRoute == null ? "-" : chosenRoute),
@@ -261,6 +265,31 @@ public class FraudCaseService {
         audit.record(caseId, AuditEventType.FOLLOW_UP_ANSWERED, ActorType.AGENT, assistant.mode(),
                 question, "follow-up answered");
         return answer;
+    }
+
+    /** Dispositions the state machine permits from the case's current state. */
+    public List<Disposition> allowedDispositions(String caseId) {
+        CaseState s = getCase(caseId).getStatus();
+        if (!List.of(CaseState.READY_FOR_REVIEW, CaseState.UNDER_REVIEW, CaseState.INCOMPLETE)
+                .contains(s)) {
+            return List.of();
+        }
+        // READY_FOR_REVIEW promotes to UNDER_REVIEW before the disposition lands.
+        CaseState eff = s == CaseState.READY_FOR_REVIEW ? CaseState.UNDER_REVIEW : s;
+        return java.util.Arrays.stream(Disposition.values())
+                .filter(d -> {
+                    CaseState t = targetFor(d);
+                    return t == eff || states.canTransition(eff, t);
+                })
+                .toList();
+    }
+
+    private static CaseState targetFor(Disposition disposition) {
+        return switch (disposition) {
+            case ACCEPT_ROUTE, ESCALATE, REROUTE, OVERRIDE -> CaseState.ROUTED;
+            case REQUEST_INFORMATION -> CaseState.INCOMPLETE;
+            case CLOSE -> CaseState.CLOSED;
+        };
     }
 
     private void transition(FraudCaseEntity c, CaseState to, String actorId) {
