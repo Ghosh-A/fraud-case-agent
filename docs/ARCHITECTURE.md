@@ -33,7 +33,7 @@ consult retrieved policy — it does not mean it can act on the world.
 │ ToolExecutor (trace + timeout)    │  │ InMemoryPolicyVectorStore│
 │ ModelFacingTools (@Tool wrappers) │  │ PolicyRetriever          │
 └───────────────────────────────────┘  └──────────────────────────┘
-┌────────────────────── persistence (H2 + Flyway) ─────────────────┐
+┌────────────────────── persistence (MySQL + Flyway) ──────────────┐
 │ fraud_case · transaction_claim · evidence_item · recommendation  │
 │ policy_citation · tool_trace · review_disposition · audit_event  │
 │ chat_memory                                                      │

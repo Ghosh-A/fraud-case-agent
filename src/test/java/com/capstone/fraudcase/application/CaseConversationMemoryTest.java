@@ -7,10 +7,13 @@ import com.capstone.fraudcase.persistence.repository.ChatMemoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 /** T10 — memory is bounded and strictly isolated per case. */
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@org.springframework.test.context.ActiveProfiles("test")
 class CaseConversationMemoryTest {
 
     @Autowired

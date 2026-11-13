@@ -3,7 +3,7 @@
 ## Stack
 
 Java 21 · Maven · Spring Boot 3.5.16 · Spring AI 1.1.8 · LangChain4j 1.22.0 ·
-H2 + Flyway + JPA · Thymeleaf + Spring Security · JUnit 5 + AssertJ + Mockito.
+MySQL 8 + Flyway + JPA · Thymeleaf + Spring Security · JUnit 5 + AssertJ + Mockito.
 
 ## Build & verify
 

@@ -16,7 +16,7 @@ evidence and policy passages, and every decision ends with a human reviewer.
 | Language / runtime | Java 21, Maven |
 | Framework | Spring Boot 3.5.16 |
 | AI frameworks | Spring AI 1.1.8 **and** LangChain4j 1.22.0 (behind one contract, parity-tested) |
-| Persistence | H2 + Flyway + Spring Data JPA |
+| Persistence | MySQL 8 + Flyway + Spring Data JPA |
 | UI | Thymeleaf + Spring Security (session login, CSRF on forms) |
 | Embeddings | `LocalHashEmbeddingModel` — deterministic, offline, reproducible |
 | Model provider | Any OpenAI-compatible endpoint (config-driven, optional) |
@@ -48,6 +48,17 @@ READY_FOR_REVIEW ── human submits disposition ──► ROUTED / CLOSED / IN
 See `docs/ARCHITECTURE.md` for the full data flow and design decisions.
 
 ## Quick start (no API key needed)
+
+Prerequisite — a local MySQL 8 instance with the app database and user:
+
+```sql
+CREATE DATABASE fraudcase CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'fraudapp'@'localhost' IDENTIFIED BY 'change-me-locally';
+GRANT ALL PRIVILEGES ON fraudcase.* TO 'fraudapp'@'localhost';
+```
+
+Override connection settings via env vars if needed: `FRAUD_DB_URL`,
+`FRAUD_DB_USER`, `FRAUD_DB_PASSWORD` (defaults shown above — local dev only).
 
 ```bash
 mvn spring-boot:run            # defaults to rules mode on port 8080
@@ -192,8 +203,10 @@ docs/             architecture, self-review
 
 - Embeddings are lexical (hashed unigrams/bigrams), not semantic — deliberately
   deterministic for training; swap `EmbeddingPort` for a real model later.
-- `InMemoryPolicyVectorStore` resets on restart (re-ingested at boot; H2 is
-  file-backed for case data in dev).
+- `InMemoryPolicyVectorStore` resets on restart (re-ingested at boot; case data
+  persists in MySQL).
 - Demo users are in-memory (`agent`/`reviewer`) — replace for any real use.
+- Tests expect the local MySQL instance (`fraudcase_test` schema,
+  `FRAUD_TEST_DB_URL` to override).
 - See `docs/SELF_REVIEW.md` for residual risks and the Spring AI vs LangChain4j
   comparison.

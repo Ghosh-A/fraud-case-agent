@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 /** Web layer: validation, authz and safe errors. */
-@SpringBootTest(properties = {"capstone.processor-mode=rules",
-        "spring.datasource.url=jdbc:h2:mem:webtest;DB_CLOSE_DELAY=-1"})
+@SpringBootTest(properties = {"capstone.processor-mode=rules"})
+@org.springframework.test.context.ActiveProfiles("test")
 @AutoConfigureMockMvc
 class CaseApiMvcTest {
 

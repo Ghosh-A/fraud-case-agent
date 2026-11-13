@@ -24,15 +24,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 /**
  * End-to-end journey in rules mode (model disabled — T07) covering the full
  * intake → enrich → recommend → review → audit flow.
  */
-@SpringBootTest(properties = {"capstone.processor-mode=rules",
-        "spring.datasource.url=jdbc:h2:mem:flowtest;DB_CLOSE_DELAY=-1"})
-@ActiveProfiles("test")
+@SpringBootTest(properties = {"capstone.processor-mode=rules"})
+@org.springframework.test.context.ActiveProfiles("test")
 class FraudCaseFlowTest {
 
     @Autowired

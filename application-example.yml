@@ -1,5 +1,10 @@
 # Copy values into environment variables or application-local.yml — never commit real keys.
 spring:
+  datasource:
+    url: ${FRAUD_DB_URL}        # e.g. jdbc:mysql://localhost:3306/fraudcase
+    username: ${FRAUD_DB_USER}
+    password: ${FRAUD_DB_PASSWORD}
+  ai:
   ai:
     model:
       chat: openai          # enables the OpenAI-compatible chat model

@@ -9,10 +9,13 @@ import com.capstone.fraudcase.persistence.repository.AuditEventRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 /** Audit trail is append-only: records insert, hash payloads, never update. */
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@org.springframework.test.context.ActiveProfiles("test")
 class AuditEventWriterTest {
 
     @Autowired
