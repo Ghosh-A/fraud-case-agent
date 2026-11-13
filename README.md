@@ -206,7 +206,7 @@ docs/             architecture, self-review
 - `InMemoryPolicyVectorStore` resets on restart (re-ingested at boot; case data
   persists in MySQL).
 - Demo users are in-memory (`agent`/`reviewer`) — replace for any real use.
-- Tests expect the local MySQL instance (`fraudcase_test` schema,
-  `FRAUD_TEST_DB_URL` to override).
+- Tests run against the same `fraudcase` schema — they leave their rows
+  behind, so wipe it if you want a clean demo.
 - See `docs/SELF_REVIEW.md` for residual risks and the Spring AI vs LangChain4j
   comparison.

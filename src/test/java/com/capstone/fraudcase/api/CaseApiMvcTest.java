@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 /** Web layer: validation, authz and safe errors. */
 @SpringBootTest(properties = {"capstone.processor-mode=rules"})
-@org.springframework.test.context.ActiveProfiles("test")
 @AutoConfigureMockMvc
 class CaseApiMvcTest {
 

@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 /** Audit trail is append-only: records insert, hash payloads, never update. */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@org.springframework.test.context.ActiveProfiles("test")
 class AuditEventWriterTest {
 
     @Autowired

@@ -30,7 +30,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  * intake → enrich → recommend → review → audit flow.
  */
 @SpringBootTest(properties = {"capstone.processor-mode=rules"})
-@org.springframework.test.context.ActiveProfiles("test")
 class FraudCaseFlowTest {
 
     @Autowired

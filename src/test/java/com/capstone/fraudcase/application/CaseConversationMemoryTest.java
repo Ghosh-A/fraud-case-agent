@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 /** T10 — memory is bounded and strictly isolated per case. */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@org.springframework.test.context.ActiveProfiles("test")
 class CaseConversationMemoryTest {
 
     @Autowired

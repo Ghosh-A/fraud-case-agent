@@ -1,8 +1,0 @@
-spring:
-  datasource:
-    url: ${FRAUD_TEST_DB_URL:jdbc:mysql://localhost:3306/fraudcase_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${FRAUD_DB_USER:fraudapp}
-    password: ${FRAUD_DB_PASSWORD:change-me-locally}
-  flyway:
-    clean-disabled: false
