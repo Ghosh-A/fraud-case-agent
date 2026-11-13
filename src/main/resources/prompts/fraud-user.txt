@@ -1,0 +1,20 @@
+INVESTIGATION GOAL
+{{investigationGoal}}
+
+CASE FACTS (validated intake, masked)
+{{caseSummary}}
+
+TOOL EVIDENCE (deterministic observations, each with an evidence ID)
+{{toolEvidence}}
+
+POLICY CONTEXT (approved passages with citation metadata)
+{{policyContext}}
+
+KNOWN MISSING INFORMATION
+{{missingInformation}}
+
+CONVERSATION CONTEXT (this case only)
+{{conversationContext}}
+
+TASK
+Return the JSON recommendation for case routing. Cite evidence IDs and policy chunk IDs you rely on. List anything still missing. humanReviewRequired must be true.

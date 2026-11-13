@@ -1,0 +1,33 @@
+# Copy values into environment variables or application-local.yml — never commit real keys.
+spring:
+  ai:
+    model:
+      chat: openai          # enables the OpenAI-compatible chat model
+      embedding: none       # local deterministic embeddings are used for policy RAG
+    openai:
+      api-key: ${OPENAI_API_KEY}        # REQUIRED for spring-ai / langchain4j modes
+      base-url: ${OPENAI_BASE_URL}      # any OpenAI-compatible endpoint
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL}   # e.g. gpt-4o-mini
+          temperature: 0.0
+
+capstone:
+  processor-mode: rules     # rules | spring-ai | langchain4j
+  human-review-required: true
+  allow-financial-actions: false
+  allow-customer-contact: false
+  retrieval:
+    top-k: 4
+    similarity-threshold: 0.15
+  memory:
+    max-messages: 12
+  tools:
+    timeout-ms: 2500
+    deterministic-seed: fraud-training-v1
+
+# Demo credentials (training only — replace for any real deployment)
+#   agent / agent123           ROLE_AGENT
+#   investigator / inv123      ROLE_INVESTIGATOR
+#   reviewer / rev123          ROLE_REVIEWER
+#   auditor / aud123           ROLE_AUDITOR

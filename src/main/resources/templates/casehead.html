@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="head">
+    <h1 th:text="${case.caseId}">CASE-000</h1>
+    <p class="meta">
+        <span th:text="${case.maskedCustomerRef}">CUST-****-0000</span> ·
+        <span th:text="${case.homeRegion}">region</span> ·
+        state <strong class="state" th:text="${case.status}">NEW</strong>
+    </p>
+    <nav class="tabs">
+        <a th:href="@{/cases/{id}(id=${case.caseId})}">Investigation</a>
+        <a th:href="@{/cases/{id}/evidence(id=${case.caseId})}">Evidence</a>
+        <a th:href="@{/cases/{id}/recommendation(id=${case.caseId})}">Recommendation</a>
+        <a th:href="@{/cases/{id}/citations(id=${case.caseId})}">Policy citations</a>
+        <a th:href="@{/cases/{id}/review(id=${case.caseId})}">Human review</a>
+    </nav>
+</header>
+</body>
+</html>

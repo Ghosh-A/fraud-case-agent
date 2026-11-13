@@ -1,0 +1,13 @@
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.idea/
+*.iml
+.vscode/
+.env
+data/
+*.db
+*.trace.db
+application-local.yml
+.DS_Store

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Human review</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <header th:replace="~{casehead :: head}"></header>
+    <div th:replace="~{fragments :: flash}"></div>
+    <div th:if="${error}" class="flash err" th:text="${error}"></div>
+
+    <section th:if="${rec != null}">
+        <h2>Agent recommendation (advisory)</h2>
+        <table class="kv">
+            <tr><th>Classification</th><td th:text="${rec.classification}"></td></tr>
+            <tr><th>Route</th><td th:text="${rec.route}"></td></tr>
+            <tr><th>Risk</th><td th:text="${rec.riskLevel}"></td></tr>
+            <tr><th>Confidence</th><td th:text="${rec.confidence}"></td></tr>
+            <tr><th>Rationale</th><td th:text="${rec.rationale}"></td></tr>
+        </table>
+    </section>
+    <p th:if="${rec == null}" class="empty">No validated recommendation to review.</p>
+
+    <section th:if="${rec != null and (case.status.name() == 'READY_FOR_REVIEW' or case.status.name() == 'UNDER_REVIEW')}">
+        <h2>Your disposition</h2>
+        <form th:action="@{/cases/{id}/review(id=${case.caseId})}" method="post" class="form">
+            <fieldset>
+                <legend>Disposition</legend>
+                <label th:each="d : ${dispositions}">
+                    <input type="radio" name="disposition" th:value="${d}" required>
+                    <span th:text="${d}"></span>
+                </label>
+            </fieldset>
+            <label for="chosenRoute">Route (for REROUTE / OVERRIDE / ESCALATE)</label>
+            <select id="chosenRoute" name="chosenRoute">
+                <option value="">— keep recommended —</option>
+                <option th:each="r : ${routes}" th:value="${r}" th:text="${r}"></option>
+            </select>
+            <label for="reason">Reviewer rationale (mandatory)</label>
+            <textarea id="reason" name="reason" required maxlength="1500"
+                      placeholder="Why you accept, escalate, reroute or close this case."></textarea>
+            <label><input type="checkbox" name="acknowledgedMissing" required>
+                I acknowledge the listed missing/contradictory information</label>
+            <button type="submit" class="button">Submit disposition</button>
+        </form>
+    </section>
+    <p th:if="${rec != null and !(case.status.name() == 'READY_FOR_REVIEW' or case.status.name() == 'UNDER_REVIEW')}"
+       class="note">Case is no longer awaiting review — current state <strong th:text="${case.status}"></strong>.</p>
+
+    <section>
+        <h2>Recorded reviews</h2>
+        <table>
+            <thead><tr><th>Review</th><th>Reviewer</th><th>Disposition</th><th>Route</th><th>At</th></tr></thead>
+            <tbody>
+            <tr th:each="r : ${reviews}">
+                <td th:text="${r.reviewId}"></td>
+                <td th:text="${r.reviewerId}"></td>
+                <td th:text="${r.disposition}"></td>
+                <td th:text="${r.chosenRoute}"></td>
+                <td th:text="${#temporals.format(r.recordedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(reviews)}"><td colspan="5" class="empty">None.</td></tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

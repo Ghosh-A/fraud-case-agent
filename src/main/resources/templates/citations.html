@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Policy citations</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <header th:replace="~{casehead :: head}"></header>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h2>Retrieved policy passages</h2>
+    <p class="note">Exact citation metadata: document ID, version, section, chunk ID and similarity score.
+        Withdrawn policy documents are never returned.</p>
+    <div th:if="${#lists.isEmpty(citations)}" class="empty">
+        No policy passage met the configured similarity threshold — abstaining.
+        No procedural guidance may be assumed for this case.
+    </div>
+    <div class="cards" th:if="${!#lists.isEmpty(citations)}">
+        <article th:each="c : ${citations}" class="card">
+            <header>
+                <strong th:text="${c.documentId + ' v' + c.version}">POL v</strong>
+                <span th:text="'§' + ${c.section}">§</span>
+                <span class="badge" th:text="'score ' + ${#numbers.formatDecimal(c.score, 1, 3)}">0</span>
+            </header>
+            <p th:text="${c.passage}"></p>
+            <footer class="meta">
+                <span th:text="${c.chunkId}"></span>
+                <span th:text="${c.citationId}"></span>
+            </footer>
+        </article>
+    </div>
+</main>
+</body>
+</html>

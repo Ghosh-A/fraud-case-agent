@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Evidence workspace</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <header th:replace="~{casehead :: head}"></header>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h2>Evidence</h2>
+    <p class="note">Customer claims (INTAKE) are shown separately from tool-observed evidence (TOOL)
+        and retrieved policy (POLICY). Every item carries provenance.</p>
+    <div class="cards">
+        <article th:each="e : ${evidence}" class="card">
+            <header>
+                <span class="badge" th:classappend="${e.severity.name()}" th:text="${e.severity}">INFO</span>
+                <span class="badge prov" th:text="${e.provenance}">TOOL</span>
+                <strong th:text="${e.title}">Title</strong>
+            </header>
+            <p th:text="${e.valueSummary}"></p>
+            <footer class="meta">
+                <span th:text="${e.evidenceId}">EV-1</span>
+                <span th:if="${e.sourceRef != null}" th:text="'src ' + ${e.sourceRef}"></span>
+                <span th:text="${#temporals.format(e.observedAt, 'HH:mm:ss')}"></span>
+            </footer>
+        </article>
+        <p th:if="${#lists.isEmpty(evidence)}" class="empty">No evidence collected yet.</p>
+    </div>
+</main>
+</body>
+</html>

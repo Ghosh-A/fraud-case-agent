@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required": ["caseId", "classification", "riskLevel", "recommendedRoute",
+               "confidence", "humanReviewRequired", "rationale"],
+  "properties": {
+    "caseId": {"type": "string"},
+    "classification": {"type": "string", "enum": [
+      "UNAUTHORISED_TRANSACTION", "MERCHANT_DISPUTE", "DUPLICATE_PROCESSING",
+      "SUSPICIOUS_TRANSACTION", "INSUFFICIENT_EVIDENCE", "GENUINE_TRANSACTION"]},
+    "riskLevel": {"type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "recommendedRoute": {"type": "string", "enum": [
+      "FRAUD_INVESTIGATION", "DISPUTE_OPERATIONS", "PAYMENT_OPERATIONS", "MANUAL_REVIEW"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "humanReviewRequired": {"type": "boolean", "const": true},
+    "evidenceIds": {"type": "array", "items": {"type": "string"}},
+    "policyCitations": {"type": "array", "items": {"type": "object",
+      "required": ["documentId", "version", "chunkId", "score"],
+      "properties": {
+        "documentId": {"type": "string"}, "version": {"type": "string"},
+        "section": {"type": "string"}, "chunkId": {"type": "string"},
+        "score": {"type": "number"}, "passage": {"type": "string"}}}},
+    "missingInformation": {"type": "array", "items": {"type": "string"}},
+    "ruleIds": {"type": "array", "items": {"type": "string"}},
+    "toolTraceIds": {"type": "array", "items": {"type": "string"}},
+    "rationale": {"type": "string"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <h1>Something went wrong</h1>
+    <p th:if="${status}" th:text="'Status ' + ${status}">Error</p>
+    <p class="note">The action failed safely — no automated change was applied to the case.</p>
+    <p><a href="/cases">Back to cases</a></p>
+</main>
+</body>
+</html>

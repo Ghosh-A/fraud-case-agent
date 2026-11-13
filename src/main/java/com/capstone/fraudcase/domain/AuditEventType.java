@@ -1,0 +1,15 @@
+package com.capstone.fraudcase.domain;
+
+public enum AuditEventType {
+    CASE_CREATED,
+    ENRICHMENT_STARTED,
+    TOOL_CALL_RECORDED,
+    POLICY_RETRIEVED,
+    RECOMMENDATION_CREATED,
+    RECOMMENDATION_INVALID,
+    STATE_CHANGED,
+    MESSAGE_ADDED,
+    FOLLOW_UP_ANSWERED,
+    REVIEW_RECORDED,
+    ERROR
+}

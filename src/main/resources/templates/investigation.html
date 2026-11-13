@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Investigation workspace</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <header th:replace="~{casehead :: head}"></header>
+    <div th:replace="~{fragments :: flash}"></div>
+
+    <section>
+        <h2>Bounded investigation plan</h2>
+        <ol class="plan">
+            <li>Validate intake &amp; mask references</li>
+            <li>getTransactionDetails</li>
+            <li>getDeviceSignals</li>
+            <li>compareRecentLocations</li>
+            <li>getMerchantRiskProfile</li>
+            <li>getPriorDisputes</li>
+            <li>retrievePolicyEvidence (top-K, thresholded)</li>
+            <li>Assess evidence → validated recommendation</li>
+            <li>calculateCaseSla for proposed route</li>
+        </ol>
+        <form th:action="@{/cases/{id}/investigate(id=${case.caseId})}" method="post"
+              th:if="${case.status.name() == 'NEW' or case.status.name() == 'INCOMPLETE'}">
+            <button class="button" type="submit">Start investigation</button>
+        </form>
+        <p th:unless="${case.status.name() == 'NEW' or case.status.name() == 'INCOMPLETE'}" class="note">
+            Investigation already run — state is <strong th:text="${case.status}"></strong>.
+        </p>
+    </section>
+
+    <section>
+        <h2>Tool execution trace</h2>
+        <table>
+            <thead><tr><th>Trace</th><th>Tool</th><th>Status</th><th>Duration</th><th>Result (redacted)</th></tr></thead>
+            <tbody>
+            <tr th:each="t : ${traces}">
+                <td th:text="${t.traceId}">TR-1</td>
+                <td th:text="${t.toolName}">tool</td>
+                <td><span class="badge" th:classappend="${t.status.name()}" th:text="${t.status}">OK</span></td>
+                <td th:text="${t.durationMs + ' ms'}">1 ms</td>
+                <td th:text="${t.resultSummary}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(traces)}"><td colspan="5" class="empty">No tool calls yet.</td></tr>
+            </tbody>
+        </table>
+        <p class="note">Operational trace only — hidden reasoning is never shown or stored.</p>
+    </section>
+
+    <section>
+        <h2>Ask a follow-up (this case only)</h2>
+        <form th:action="@{/cases/{id}/message(id=${case.caseId})}" method="post" class="form">
+            <label for="message">Question</label>
+            <input id="message" name="message" maxlength="1000" required
+                   placeholder="e.g. Why was this treated as unauthorised use?">
+            <button type="submit" class="button">Ask</button>
+        </form>
+        <pre th:if="${followUp}" class="answer" th:text="${followUp}"></pre>
+    </section>
+</main>
+</body>
+</html>

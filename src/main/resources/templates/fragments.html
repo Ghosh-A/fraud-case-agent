@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="nav" class="nav">
+    <a href="/cases">Cases</a>
+    <a href="/cases/new">New intake</a>
+    <a href="/audit">Audit trail</a>
+    <span class="spacer"></span>
+    <span class="badge synth">SYNTHETIC TRAINING DATA</span>
+    <form th:action="@{/logout}" method="post" class="inline">
+        <button type="submit" class="link">Sign out</button>
+    </form>
+</nav>
+<div th:fragment="flash">
+    <p th:if="${notice}" class="flash ok" th:text="${notice}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+</div>
+</body>
+</html>

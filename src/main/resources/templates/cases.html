@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Fraud cases</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <h1>Fraud dispute cases</h1>
+    <div th:replace="~{fragments :: flash}"></div>
+    <p><a class="button" href="/cases/new">New case intake</a></p>
+    <table>
+        <thead>
+        <tr><th>Case</th><th>Customer</th><th>Region</th><th>State</th><th>Reported</th><th>Analyst</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${cases}">
+            <td><a th:href="@{/cases/{id}(id=${c.caseId})}" th:text="${c.caseId}">C</a></td>
+            <td th:text="${c.maskedCustomerRef}"></td>
+            <td th:text="${c.homeRegion}"></td>
+            <td><strong class="state" th:text="${c.status}"></strong></td>
+            <td th:text="${#temporals.format(c.reportedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${c.analystId}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(cases)}"><td colspan="6" class="empty">No cases yet.</td></tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

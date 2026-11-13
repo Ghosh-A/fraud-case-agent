@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Recommendation</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <header th:replace="~{casehead :: head}"></header>
+    <div th:replace="~{fragments :: flash}"></div>
+    <div th:if="${rec != null}">
+        <h2>Structured recommendation <span class="badge prov" th:text="${rec.mode}">mode</span></h2>
+        <table class="kv">
+            <tr><th>Classification</th><td th:text="${rec.classification}"></td></tr>
+            <tr><th>Risk</th><td th:text="${rec.riskLevel}"></td></tr>
+            <tr><th>Recommended route</th><td th:text="${rec.route}"></td></tr>
+            <tr><th>Confidence</th><td th:text="${rec.confidence}"></td></tr>
+            <tr><th>Human review required</th>
+                <td><strong th:text="${rec.humanReviewRequired}">true</strong></td></tr>
+            <tr><th>Rationale</th><td th:text="${rec.rationale}"></td></tr>
+        </table>
+        <h3>Linked evidence</h3>
+        <ul><li th:each="id : ${evidenceIds}" th:text="${id}"></li></ul>
+        <h3>Rule IDs</h3>
+        <ul><li th:each="id : ${ruleIds}" th:text="${id}"></li></ul>
+        <h3>Missing / contradictory information</h3>
+        <ul>
+            <li th:each="m : ${missingInfo}" th:text="${m}"></li>
+            <li th:if="${#lists.isEmpty(missingInfo)}" class="empty">None recorded.</li>
+        </ul>
+        <p class="note">Advisory only — no automated action was or will be taken.
+            <a th:href="@{/cases/{id}/review(id=${case.caseId})}">Open human review</a></p>
+    </div>
+    <p th:if="${rec == null}" class="empty">No validated recommendation yet — run the investigation first.</p>
+</main>
+</body>
+</html>

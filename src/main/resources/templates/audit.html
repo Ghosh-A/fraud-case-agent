@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Audit trail</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+    <h1>Audit trail</h1>
+    <div th:replace="~{fragments :: flash}"></div>
+    <form method="get" action="/audit" class="form inline-form">
+        <label for="caseId">Case</label>
+        <select id="caseId" name="caseId">
+            <option value="">— choose —</option>
+            <option th:each="c : ${cases}" th:value="${c.caseId}" th:text="${c.caseId}"
+                    th:selected="${c.caseId == caseId}"></option>
+        </select>
+        <button class="button" type="submit">Show events</button>
+    </form>
+    <table th:if="${events != null}">
+        <thead><tr><th>Event</th><th>Type</th><th>Actor</th><th>Summary</th><th>Payload hash</th><th>Recorded</th></tr></thead>
+        <tbody>
+        <tr th:each="e : ${events}">
+            <td th:text="${e.eventId}"></td>
+            <td th:text="${e.eventType}"></td>
+            <td th:text="${e.actorType + '/' + e.actorId}"></td>
+            <td th:text="${e.summary}"></td>
+            <td class="hash" th:text="${e.payloadHash.substring(0, 12) + '…'}"></td>
+            <td th:text="${#temporals.format(e.recordedAt, 'HH:mm:ss')}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(events)}"><td colspan="6" class="empty">No events.</td></tr>
+        </tbody>
+    </table>
+    <p class="note">Append-only — events are never updated or deleted. Payloads are stored as hashes.</p>
+</main>
+</body>
+</html>

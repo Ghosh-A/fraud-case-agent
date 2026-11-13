@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: fraud-case-agent
+  datasource:
+    url: jdbc:h2:file:./data/frauddb;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  ai:
+    # Model stays disabled until an OpenAI-compatible endpoint + key are configured.
+    model:
+      chat: none
+      embedding: none
+    openai:
+      api-key: ${OPENAI_API_KEY:disabled}
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+          temperature: 0.0
+
+capstone:
+  processor-mode: rules        # rules | spring-ai | langchain4j
+  human-review-required: true
+  allow-financial-actions: false
+  allow-customer-contact: false
+  investigation-goal: "Triage the fraud or dispute report: classify the issue, assess risk and recommend a review route. Never take or promise any account action."
+  retrieval:
+    top-k: 4
+    similarity-threshold: 0.15   # cosine threshold for the local hash embedder; raise to ~0.72 for a provider embedding
+  memory:
+    max-messages: 12
+  tools:
+    timeout-ms: 2500
+    deterministic-seed: fraud-training-v1
+  security:
+    demo-users-enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.capstone.fraudcase: INFO
